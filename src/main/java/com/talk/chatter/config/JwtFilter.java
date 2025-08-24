@@ -25,6 +25,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String path = request.getServletPath();
+        System.out.println("Error:"+path);
+        // Skip JWT check for auth endpoints and public resources
+        /*if (path.startsWith("/auth/") || path.equals("/") || path.equals("/ws-chat")) {
+            filterChain.doFilter(request, response);
+            return;
+        }*/
+
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String email = null;

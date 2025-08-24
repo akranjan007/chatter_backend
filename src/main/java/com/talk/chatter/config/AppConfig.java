@@ -3,6 +3,7 @@ package com.talk.chatter.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -46,10 +47,11 @@ public class AppConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedOrigins(List.of("http://localhost:3000", "https://chatterwebv1.netlify.app"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
         config.setAllowCredentials(true);
+        config.setExposedHeaders(List.of("Authorization"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
@@ -58,22 +60,17 @@ public class AppConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())  // disable CSRF for testing APIs
+                .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/",  "/ws-chat").permitAll()
-                        .anyRequest().authenticated() // allow all requests
+                        // Allow all auth endpoints (now under /api/v1 context)
+                        .requestMatchers("/auth/**", "/", "/ws-chat", "/error").permitAll()
+                        .anyRequest().permitAll()
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-                /*.authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Allow access to all requests
-                )
-                //.csrf(csrf -> csrf.disable()) // Disable CSRF for non-stateful requests
-                .formLogin(Customizer.withDefaults()); // Disable login page
-                //.httpBasic(httpBasic -> httpBasic.disable()); // Disable HTTP Basic authentication
-*/
+
         return http.build();
     }
 }
