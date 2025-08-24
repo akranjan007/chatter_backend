@@ -1,0 +1,17 @@
+<!-- src/main/resources/static/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test WebSocket</title>
+</head>
+<body>
+<script>
+    const socket = new WebSocket('ws://localhost:8080/ws-chat?token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJha3JhbmphbmxuY3RAZ21haWwuY29tIiwiaWF0IjoxNzQ1NzY2NDEwLCJleHAiOjE3NDU3NzAwMTB9.xppzEw6DbDp__9L1kkKwCc3DckX4c8-NBkCYc4kHMJJ7SSwiz2DZLtHA5uOdCRsG');
+    socket.onopen = () => console.log('Connected!');
+    socket.onmessage = (msg) => console.log('Received:', msg.data);
+    socket.onerror = (err) => console.log('Error:', err);
+    socket.onclose = () => console.log('Closed');
+</script>
+</body>
+</html>
