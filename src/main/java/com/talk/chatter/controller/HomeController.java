@@ -1,3 +1,4 @@
+/*
 package com.talk.chatter.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,4 +22,4 @@ public class HomeController {
         //return ("<h1>Hey Admin!</h1>");
         return "Admin Remarks - 100";
     }
-}
+}*/
